@@ -38,14 +38,17 @@ document.getElementById('loginForm').addEventListener('submit', (event) => {
             // Login bem-sucedido
             const user = userCredential.user;
             console.log("Usuário logado:", user);
+            alert("Login bem-sucedido!");
             window.location.href = 'home.html';  // Redirecionar para outra página
         })
         .catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
             console.error("Erro no login:", errorMessage);
+            alert("Conta não autorizada!");  // Exibir mensagem de erro
         });
 });
+
 
 // Gerenciamento do Carrinho
 let cart = [];
