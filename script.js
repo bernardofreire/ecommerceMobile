@@ -10,6 +10,8 @@ import {
   collection,
   addDoc,
 } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+import { ref, set } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+
 
 // Inicializar Firestore
 const db = getFirestore();
@@ -20,12 +22,23 @@ document.getElementById("registerForm").addEventListener("submit", (event) => {
 
   const email = document.getElementById("registerEmail").value;
   const password = document.getElementById("registerPassword").value;
+  const role = "user";  // Definir o tipo de usuário como "user"
 
   createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
-      // Usuário registrado com sucesso
       const user = userCredential.user;
       console.log("Usuário registrado:", user);
+
+      // Adicionar o usuário ao Realtime Database com o campo 'role'
+      set(ref(database, 'users/' + user.uid), {
+        email: user.email,
+        role: role
+      }).then(() => {
+        console.log("Usuário adicionado com sucesso ao banco de dados.");
+      }).catch((error) => {
+        console.error("Erro ao adicionar usuário ao banco de dados:", error);
+      });
+
       window.location.href = "home.html"; // Redirecionar para a página home
     })
     .catch((error) => {
@@ -34,7 +47,7 @@ document.getElementById("registerForm").addEventListener("submit", (event) => {
 });
 
 // Função para login do usuário
-document.getElementById("loginForm").addEventListener("submit", (event) => {
+ddocument.getElementById("loginForm").addEventListener("submit", (event) => {
   event.preventDefault();
 
   const email = document.getElementById("loginEmail").value;
@@ -42,12 +55,28 @@ document.getElementById("loginForm").addEventListener("submit", (event) => {
 
   signInWithEmailAndPassword(auth, email, password)
     .then(async (userCredential) => {
-      console.log(userCredential);
       const user = userCredential.user;
-      const token = await user.getIdToken(); // Obter o token JWT
-      console.log("Token JWT do usuário:", token);
-      sessionStorage.setItem("authToken", token); // Armazenar o token na sessão
-      window.location.href = "home.html"; // Redirecionar para a página home
+
+      // Buscar o papel do usuário no banco de dados
+      const userRef = ref(database, 'users/' + user.uid);
+      get(userRef).then((snapshot) => {
+        if (snapshot.exists()) {
+          const userData = snapshot.val();
+          const userRole = userData.role;
+          console.log("Tipo de usuário:", userRole);
+
+          // Redirecionar ou habilitar/desabilitar funções com base no papel
+          if (userRole === 'admin') {
+            window.location.href = "admin-dashboard.html"; // Página de administrador
+          } else {
+            window.location.href = "home.html"; // Página de usuário comum
+          }
+        } else {
+          console.log("Usuário não encontrado no banco de dados.");
+        }
+      }).catch((error) => {
+        console.error("Erro ao buscar dados do usuário:", error);
+      });
     })
     .catch((error) => {
       console.error("Erro no login:", error.message);
