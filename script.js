@@ -14,62 +14,46 @@ import {
 // Inicializar Firestore
 const db = getFirestore();
 
-
-// Função para registro de usuário
-document.getElementById("registerForm").addEventListener("submit", async (event) => {
+// Função para registrar o usuário
+document.getElementById("registerForm").addEventListener("submit", (event) => {
   event.preventDefault();
 
   const email = document.getElementById("registerEmail").value;
   const password = document.getElementById("registerPassword").value;
-  const userType = document.getElementById("userType").value; // Tipo de usuário
 
-  try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    // Usuário registrado com sucesso
-    const user = userCredential.user;
-
-    // Salvar o tipo de usuário no Firestore
-    await addDoc(collection(db, "users"), {
-      uid: user.uid,
-      email: email,
-      userType: userType // Salvando o tipo de usuário
+  createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      // Usuário registrado com sucesso
+      const user = userCredential.user;
+      console.log("Usuário registrado:", user);
+      window.location.href = "home.html"; // Redirecionar para a página home
+    })
+    .catch((error) => {
+      console.error("Erro no registro:", error.message);
     });
-
-    alert("Usuário registrado com sucesso!");
-    window.location.href = "home.html"; // Redirecionar para a página home
-  } catch (error) {
-    console.error("Erro no registro:", error.message);
-    alert("Erro no registro: " + error.message);
-  }
 });
 
 // Função para login do usuário
-document.getElementById("loginForm").addEventListener("submit", async (event) => {
+document.getElementById("loginForm").addEventListener("submit", (event) => {
   event.preventDefault();
 
   const email = document.getElementById("loginEmail").value;
   const password = document.getElementById("loginPassword").value;
 
-  try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
-    
-    // Obter informações do usuário
-    const userDoc = await getDoc(doc(db, "users", user.uid));
-    const userData = userDoc.data();
-
-    // Verificar o tipo de usuário e redirecionar
-    if (userData.userType === "admin") {
-      window.location.href = "admin_home.html"; // Redirecionar para a página do admin
-    } else {
-      window.location.href = "home.html"; // Redirecionar para a página home do usuário
-    }
-  } catch (error) {
-    console.error("Erro no login:", error.message);
-    alert("Conta não autorizada!");
-  }
+  signInWithEmailAndPassword(auth, email, password)
+    .then(async (userCredential) => {
+      console.log(userCredential);
+      const user = userCredential.user;
+      const token = await user.getIdToken(); // Obter o token JWT
+      console.log("Token JWT do usuário:", token);
+      sessionStorage.setItem("authToken", token); // Armazenar o token na sessão
+      window.location.href = "home.html"; // Redirecionar para a página home
+    })
+    .catch((error) => {
+      console.error("Erro no login:", error.message);
+      alert("Conta não autorizada!");
+    });
 });
-
 
 // Verificação de autenticação
 onAuthStateChanged(auth, (user) => {

@@ -7,27 +7,23 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        // Função para verificar se o usuário está logado
-        const checkAuth = () => {
-          const authToken = sessionStorage.getItem("authToken");
-          if (!authToken) {
-            window.location.href = "index.html"; // Redirecionar para a tela de login
-          }
-        };
+        // Verificar se o usuário está logado ao carregar a página
+        const authToken = sessionStorage.getItem("authToken");
+        const userEmail = sessionStorage.getItem("email"); 
+        
+        if (!authToken) {
+          window.location.href = "index.html"; // Redirecionar para a tela de login
+        } else {
+          console.log("Email do usuário autenticado:", userEmail); // Registrar o email no console
+        }
 
         // Função de logout
-        const logout = () => {
-          sessionStorage.removeItem("authToken"); // Remover o token
-          window.location.href = "index.html"; // Redirecionar para a tela de login
-        };
-
-        // Verificar se o usuário está logado ao carregar a página
-        checkAuth();
-
-        // Adicionar evento de click ao botão de logout
         const logoutButton = document.getElementById("logoutButton");
         if (logoutButton) {
-          logoutButton.addEventListener("click", logout);
+          logoutButton.addEventListener("click", () => {
+            sessionStorage.removeItem("authToken"); // Remover o token
+            window.location.href = "index.html"; // Redirecionar para a tela de login
+          });
         }
       });
     </script>
@@ -92,7 +88,10 @@
         </div>
         <div class="flex items-center space-x-4">
           <!-- Botão de Logout -->
-          <button id="logoutButton" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">
+          <button
+            id="logoutButton"
+            class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
+          >
             Sair
           </button>
         </div>
