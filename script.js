@@ -10,11 +10,12 @@ import {
   collection,
   addDoc,
 } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
-import { ref, set } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+import { ref, set, getDatabase } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
 
 
-// Inicializar Firestore
+// Inicializar Realtime Database
 const db = getFirestore();
+const database = getDatabase();
 
 // Função para registrar o usuário
 document.getElementById("registerForm").addEventListener("submit", (event) => {
@@ -33,13 +34,14 @@ document.getElementById("registerForm").addEventListener("submit", (event) => {
       set(ref(database, 'users/' + user.uid), {
         email: user.email,
         role: role
-      }).then(() => {
+      })
+      .then(() => {
         console.log("Usuário adicionado com sucesso ao banco de dados.");
-      }).catch((error) => {
+        window.location.href = "home.html"; // Redirecionar para a página home
+      })
+      .catch((error) => {
         console.error("Erro ao adicionar usuário ao banco de dados:", error);
       });
-
-      window.location.href = "home.html"; // Redirecionar para a página home
     })
     .catch((error) => {
       console.error("Erro no registro:", error.message);
@@ -47,7 +49,7 @@ document.getElementById("registerForm").addEventListener("submit", (event) => {
 });
 
 // Função para login do usuário
-ddocument.getElementById("loginForm").addEventListener("submit", (event) => {
+document.getElementById("loginForm").addEventListener("submit", (event) => {
   event.preventDefault();
 
   const email = document.getElementById("loginEmail").value;
@@ -67,7 +69,7 @@ ddocument.getElementById("loginForm").addEventListener("submit", (event) => {
 
           // Redirecionar ou habilitar/desabilitar funções com base no papel
           if (userRole === 'admin') {
-            window.location.href = "admin-dashboard.html"; // Página de administrador
+            window.location.href = "produto.html"; // Página de administrador
           } else {
             window.location.href = "home.html"; // Página de usuário comum
           }
@@ -113,46 +115,3 @@ document.getElementById("logoutButton")?.addEventListener("click", async () => {
     console.error("Erro ao deslogar:", error.message);
   }
 });
-
-// Gerenciamento do Carrinho
-let cart = [];
-
-// Função para adicionar um item ao carrinho e salvar no Firestore
-async function addToCart(productName) {
-  cart.push(productName);
-  alert(`${productName} adicionado ao carrinho!`);
-
-  try {
-    // Adiciona o item ao Firestore na coleção "cart"
-    await addDoc(collection(db, "cart"), {
-      productName: productName,
-      timestamp: new Date(),
-    });
-    console.log(`${productName} salvo no Firestore`);
-  } catch (e) {
-    console.error("Erro ao salvar no Firestore:", e);
-  }
-}
-
-// Função para abrir o modal do carrinho
-function toggleCart() {
-  document.getElementById("cartModal").classList.toggle("hidden");
-  renderCartItems();
-}
-
-// Função para fechar o modal do carrinho
-function closeCart() {
-  document.getElementById("cartModal").classList.add("hidden");
-}
-
-// Função para renderizar os itens do carrinho
-function renderCartItems() {
-  const cartItemsContainer = document.getElementById("cartItems");
-  cartItemsContainer.innerHTML = "";
-  cart.forEach((item) => {
-    const li = document.createElement("li");
-    li.classList.add("text-gray-700", "mb-2");
-    li.textContent = item;
-    cartItemsContainer.appendChild(li);
-  });
-}
