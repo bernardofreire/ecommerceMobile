@@ -10,8 +10,7 @@ import {
   collection,
   addDoc,
 } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
-import { ref, set, getDatabase } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
-
+import { ref, set, get, getDatabase } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js"; // Importar a função 'get'
 
 // Inicializar Realtime Database
 const db = getFirestore();
@@ -23,7 +22,7 @@ document.getElementById("registerForm").addEventListener("submit", (event) => {
 
   const email = document.getElementById("registerEmail").value;
   const password = document.getElementById("registerPassword").value;
-  const role = "user";  // Definir o tipo de usuário como "user"
+  const role = "user"; // Definir o tipo de usuário como "user"
 
   createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
@@ -33,15 +32,15 @@ document.getElementById("registerForm").addEventListener("submit", (event) => {
       // Adicionar o usuário ao Realtime Database com o campo 'role'
       set(ref(database, 'users/' + user.uid), {
         email: user.email,
-        role: role
+        role: role,
       })
-      .then(() => {
-        console.log("Usuário adicionado com sucesso ao banco de dados.");
-        window.location.href = "home.html"; // Redirecionar para a página home
-      })
-      .catch((error) => {
-        console.error("Erro ao adicionar usuário ao banco de dados:", error);
-      });
+        .then(() => {
+          console.log("Usuário adicionado com sucesso ao banco de dados.");
+          window.location.href = "home.html"; // Redirecionar para a página home
+        })
+        .catch((error) => {
+          console.error("Erro ao adicionar usuário ao banco de dados:", error);
+        });
     })
     .catch((error) => {
       console.error("Erro no registro:", error.message);
@@ -75,14 +74,16 @@ document.getElementById("loginForm").addEventListener("submit", (event) => {
           }
         } else {
           console.log("Usuário não encontrado no banco de dados.");
+          alert("Usuário não encontrado. Por favor, verifique seu email ou registre-se.");
         }
       }).catch((error) => {
         console.error("Erro ao buscar dados do usuário:", error);
+        alert("Erro ao buscar dados do usuário: " + error.message);
       });
     })
     .catch((error) => {
       console.error("Erro no login:", error.message);
-      alert("Conta não autorizada!");
+      alert("Erro no login: " + error.message); // Mostra a mensagem de erro do Firebase
     });
 });
 

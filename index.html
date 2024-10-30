@@ -94,9 +94,9 @@
         loginButton.classList.add('loading');
         try {
             const message = await fakeAuth(email, password);
-            alert(message);
+            console.log(message);
         } catch (error) {
-            alert(error);
+            console.log(error);
         } finally {
             loginButton.classList.remove('loading');
             loginForm.reset();
