@@ -1,0 +1,29 @@
+/* Modal Cart - Fixed at the top right corner */
+.cart-modal {
+    position: fixed;
+    top: 70px; /* Adjust vertical position under the header */
+    right: 20px; /* Adjust horizontal position to the right */
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding: 1rem;
+    z-index: 50;
+}
+
+.cart-content {
+    background-color: white;
+    width: 20rem;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Main content styling */
+body {
+    font-family: Arial, sans-serif;
+}
+
+button {
+    cursor: pointer;
+}
