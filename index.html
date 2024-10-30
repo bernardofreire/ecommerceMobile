@@ -1,181 +1,134 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login e Registro com Firebase</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
-      rel="stylesheet"
-    />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
-      .loading {
-        opacity: 0.5;
-        pointer-events: none;
-      }
+        .loading {
+            opacity: 0.5;
+            pointer-events: none;
+        }
     </style>
-  </head>
-  <body class="flex justify-center items-center min-h-screen bg-gray-100">
-    <div class="bg-white shadow-md rounded-lg p-6 w-full max-w-sm">
-      <div class="mb-4">
+</head>
+<body class="flex justify-center items-center min-h-screen bg-gray-100">
+
+<div class="bg-white shadow-md rounded-lg p-6 w-full max-w-sm">
+    <div class="mb-4">
         <ul class="flex border-b">
-          <li class="mr-1">
-            <button
-              id="loginTab"
-              class="tab-button rounded py-2 px-4 text-blue-600 font-semibold focus:outline-none"
-            >
-              Login
-            </button>
-          </li>
-          <li class="mr-1">
-            <button
-              id="registerTab"
-              class="tab-button rounded py-2 px-4 text-gray-600 hover:text-blue-600 focus:outline-none"
-            >
-              Registro
-            </button>
-          </li>
+            <li class="mr-1">
+                <button id="loginTab" class="tab-button border rounded-t py-2 px-4 text-blue-600 font-semibold focus:outline-none">Login</button>
+            </li>
+            <li class="mr-1">
+                <button id="registerTab" class="tab-button py-2 px-4 text-gray-600 hover:text-blue-600 focus:outline-none">Registro</button>
+            </li>
         </ul>
-      </div>
-
-      <div id="loginSection" class="tab-content">
-        <h2 class="text-xl font-bold mb-4">Login</h2>
-        <form id="loginForm">
-          <input
-            type="email"
-            id="loginEmail"
-            placeholder="Email"
-            required
-            class="border border-gray-300 rounded-md p-2 w-full mb-4"
-          />
-          <input
-            type="password"
-            id="loginPassword"
-            placeholder="Senha"
-            required
-            class="border border-gray-300 rounded-md p-2 w-full mb-4"
-          />
-          <button
-            type="submit"
-            id="loginButton"
-            class="w-full bg-blue-500 text-white rounded-md py-2 hover:bg-blue-600"
-          >
-            Login
-          </button>
-        </form>
-      </div>
-
-      <div id="registerSection" class="tab-content hidden">
-        <h2 class="text-xl font-bold mb-4">Registro</h2>
-        <form id="registerForm">
-          <input
-            type="email"
-            id="registerEmail"
-            placeholder="Email"
-            required
-            class="border border-gray-300 rounded-md p-2 w-full mb-4"
-          />
-          <input
-            type="password"
-            id="registerPassword"
-            placeholder="Senha"
-            required
-            class="border border-gray-300 rounded-md p-2 w-full mb-4"
-          />
-          <button
-            type="submit"
-            id="registerButton"
-            class="w-full bg-blue-500 text-white rounded-md py-2 hover:bg-blue-600"
-          >
-            Registrar
-          </button>
-        </form>
-      </div>
     </div>
 
-    <script>
-      const loginTab = document.getElementById("loginTab");
-      const registerTab = document.getElementById("registerTab");
-      const loginSection = document.getElementById("loginSection");
-      const registerSection = document.getElementById("registerSection");
-      const loginForm = document.getElementById("loginForm");
-      const registerForm = document.getElementById("registerForm");
-      const loginButton = document.getElementById("loginButton");
-      const registerButton = document.getElementById("registerButton");
+    <div id="loginSection" class="tab-content">
+        <h2 class="text-xl font-bold mb-4">Login</h2>
+        <form id="loginForm">
+            <input type="email" id="loginEmail" placeholder="Email" required class="border border-gray-300 rounded-md p-2 w-full mb-4">
+            <input type="password" id="loginPassword" placeholder="Senha" required class="border border-gray-300 rounded-md p-2 w-full mb-4">
+            <button type="submit" id="loginButton" class="w-full bg-blue-500 text-white rounded-md py-2 hover:bg-blue-600">Login</button>
+        </form>
+    </div>
 
-      loginTab.addEventListener("click", () => {
-        loginSection.classList.remove("hidden");
-        registerSection.classList.add("hidden");
-        loginTab.classList.add("text-blue-600");
-        loginTab.classList.remove("text-gray-600");
-        registerTab.classList.add("text-gray-600");
-        registerTab.classList.remove("text-blue-600");
-      });
+    <div id="registerSection" class="tab-content hidden">
+        <h2 class="text-xl font-bold mb-4">Registro</h2>
+        <form id="registerForm">
+            <input type="email" id="registerEmail" placeholder="Email" required class="border border-gray-300 rounded-md p-2 w-full mb-4">
+            <input type="password" id="registerPassword" placeholder="Senha" required class="border border-gray-300 rounded-md p-2 w-full mb-4">
+            <button type="submit" id="registerButton" class="w-full bg-blue-500 text-white rounded-md py-2 hover:bg-blue-600">Registrar</button>
+        </form>
+    </div>
+</div>
 
-      registerTab.addEventListener("click", () => {
-        loginSection.classList.add("hidden");
-        registerSection.classList.remove("hidden");
-        registerTab.classList.add("text-blue-600");
-        registerTab.classList.remove("text-gray-600");
-        loginTab.classList.add("text-gray-600");
-        loginTab.classList.remove("text-blue-600");
-      });
+<script>
+    const loginTab = document.getElementById('loginTab');
+    const registerTab = document.getElementById('registerTab');
+    const loginSection = document.getElementById('loginSection');
+    const registerSection = document.getElementById('registerSection');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const loginButton = document.getElementById('loginButton');
+    const registerButton = document.getElementById('registerButton');
 
-      // Função para simular a autenticação
-      const fakeAuth = (email, password) => {
+    loginTab.addEventListener('click', () => {
+        loginSection.classList.remove('hidden');
+        registerSection.classList.add('hidden');
+        loginTab.classList.add('text-blue-600');
+        loginTab.classList.remove('text-gray-600');
+        registerTab.classList.add('text-gray-600');
+        registerTab.classList.remove('text-blue-600');
+    });
+
+    registerTab.addEventListener('click', () => {
+        loginSection.classList.add('hidden');
+        registerSection.classList.remove('hidden');
+        registerTab.classList.add('text-blue-600');
+        registerTab.classList.remove('text-gray-600');
+        loginTab.classList.add('text-gray-600');
+        loginTab.classList.remove('text-blue-600');
+    });
+
+    // Função para simular a autenticação
+    const fakeAuth = (email, password) => {
         return new Promise((resolve, reject) => {
-          setTimeout(() => {
-            if (email === "user@example.com" && password === "password") {
-              resolve("Login bem-sucedido!");
-            } else {
-              reject("Conta não autorizada!");
-            }
-          }, 1000);
+            setTimeout(() => {
+                if (email === "user@example.com" && password === "password") {
+                    resolve("Login bem-sucedido!");
+                } else {
+                    reject("Conta não autorizada!");
+                }
+            }, 1000);
         });
-      };
+    };
 
-      loginForm.addEventListener("submit", async (e) => {
+    loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const email = document.getElementById("loginEmail").value;
-        const password = document.getElementById("loginPassword").value;
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
 
-        loginButton.classList.add("loading");
+        loginButton.classList.add('loading');
         try {
-          const message = await fakeAuth(email, password);
-          alert(message);
+            const message = await fakeAuth(email, password);
+            alert(message);
         } catch (error) {
-          alert(error);
+            alert(error);
         } finally {
-          loginButton.classList.remove("loading");
-          loginForm.reset();
+            loginButton.classList.remove('loading');
+            loginForm.reset();
         }
-      });
+    });
 
-      // Função para simular o registro
-      const fakeRegister = (email, password) => {
+    // Função para simular o registro
+    const fakeRegister = (email, password) => {
         return new Promise((resolve) => {
-          setTimeout(() => {
-            resolve("Usuário registrado com sucesso!");
-          }, 1000);
+            setTimeout(() => {
+                resolve("Usuário registrado com sucesso!");
+            }, 1000);
         });
-      };
+    };
 
-      registerForm.addEventListener("submit", async (e) => {
+    registerForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const email = document.getElementById("registerEmail").value;
-        const password = document.getElementById("registerPassword").value;
+        const email = document.getElementById('registerEmail').value;
+        const password = document.getElementById('registerPassword').value;
 
-        registerButton.classList.add("loading");
+        registerButton.classList.add('loading');
         try {
-          const message = await fakeRegister(email, password);
-          alert(message);
+            const message = await fakeRegister(email, password);
+            alert(message);
         } finally {
-          registerButton.classList.remove("loading");
-          registerForm.reset();
+            registerButton.classList.remove('loading');
+            registerForm.reset();
         }
-      });
-    </script>
-    <script type="module" src="firebase-config.js"></script>
-    <script type="module" src="script.js"></script>
-  </body>
+    });
+</script>
+<script type="module" src="firebase-config.js"></script>
+<script type="module" src="script.js"></script>
+
+</body>
 </html>

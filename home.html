@@ -5,7 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Fashion Store</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Verificar se o usuário está logado ao carregar a página
+        const authToken = sessionStorage.getItem("authToken");
+        if (!authToken) {
+          window.location.href = "index.html"; // Redirecionar para a tela de login
+        }
+
+        // Função de logout
+        const logoutButton = document.getElementById("logoutButton");
+        if (logoutButton) {
+          logoutButton.addEventListener("click", () => {
+            sessionStorage.removeItem("authToken"); // Remover o token
+            window.location.href = "index.html"; // Redirecionar para a tela de login
+          });
+        }
+      });
+    </script>
   </head>
+  <script>
+    // Redirecionar se o usuário não estiver logado
+    const authToken = sessionStorage.getItem("authToken");
+    if (!authToken) {
+      window.location.href = "index.html";
+    }
+  </script>
   <body class="bg-gray-50">
     <!-- Header -->
     <header class="sticky top-0 z-50 bg-white shadow-sm">
@@ -60,7 +85,7 @@
         <div class="flex items-center space-x-4">
           <!-- Botão de Logout -->
           <button
-            id="logout-btn"
+            id="logoutButton"
             class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
           >
             Sair

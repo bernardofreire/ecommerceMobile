@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-import { getAuth, browserSessionPersistence, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
+import { getAuth, browserSessionPersistence, GoogleAuthProvider, onAuthStateChanged, signOut  } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
 import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-analytics.js";
 
@@ -21,4 +21,4 @@ const auth = getAuth(app);
 const database = getDatabase(app);
 const analytics = getAnalytics(app);
 
-export { auth, database };
+export { auth, database, signOut };

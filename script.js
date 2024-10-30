@@ -1,8 +1,8 @@
 import { auth } from './firebase-config.js';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
 import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
 
-// Inicialize o Firestore
+// Inicializar Firestore
 const db = getFirestore();
 
 // Função para registrar o usuário
@@ -17,12 +17,10 @@ document.getElementById('registerForm').addEventListener('submit', (event) => {
             // Usuário registrado com sucesso
             const user = userCredential.user;
             console.log("Usuário registrado:", user);
-            window.location.href = 'home.html';  // Redirecionar para outra página
+            window.location.href = 'home.html';  // Redirecionar para a página home
         })
         .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            console.error("Erro no registro:", errorMessage);
+            console.error("Erro no registro:", error.message);
         });
 });
 
@@ -34,21 +32,48 @@ document.getElementById('loginForm').addEventListener('submit', (event) => {
     const password = document.getElementById('loginPassword').value;
 
     signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-            // Login bem-sucedido
+        .then(async (userCredential) => {
             const user = userCredential.user;
-            console.log("Usuário logado:", user);
-            alert("Login bem-sucedido!");
-            window.location.href = 'home.html';  // Redirecionar para outra página
+            const token = await user.getIdToken();  // Obter o token JWT
+            console.log("Token JWT do usuário:", token);
+            sessionStorage.setItem("authToken", token); // Armazenar o token na sessão
+            window.location.href = 'home.html';  // Redirecionar para a página home
         })
         .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            console.error("Erro no login:", errorMessage);
-            alert("Conta não autorizada!");  // Exibir mensagem de erro
+            console.error("Erro no login:", error.message);
+            alert("Conta não autorizada!");
         });
 });
 
+// Verificação de autenticação
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        const token = sessionStorage.getItem("authToken");
+        if (!token) {
+            user.getIdToken().then((newToken) => {
+                sessionStorage.setItem("authToken", newToken);
+            });
+        }
+    } else {
+        sessionStorage.removeItem("authToken");
+        // Verifica se está em uma página restrita
+        if (window.location.pathname !== '/index.html') {
+            window.location.href = 'index.html';  // Redirecionar para login se não autenticado
+        }
+    }
+});
+
+// Função de logout
+document.getElementById('logoutButton')?.addEventListener('click', async () => {
+    try {
+        await signOut(auth);
+        sessionStorage.removeItem("authToken");  // Remove o token da sessão
+        alert("Logout bem-sucedido!");
+        window.location.href = 'index.html';  // Redireciona para a página de login
+    } catch (error) {
+        console.error("Erro ao deslogar:", error.message);
+    }
+});
 
 // Gerenciamento do Carrinho
 let cart = [];
@@ -56,7 +81,7 @@ let cart = [];
 // Função para adicionar um item ao carrinho e salvar no Firestore
 async function addToCart(productName) {
     cart.push(productName);
-    alert(`${productName} added to cart!`);
+    alert(`${productName} adicionado ao carrinho!`);
     
     try {
         // Adiciona o item ao Firestore na coleção "cart"
